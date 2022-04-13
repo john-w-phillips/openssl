@@ -108,7 +108,7 @@ int RAND_query_egd_bytes(const char *path, unsigned char *buf, int bytes);
 int RAND_egd(const char *path);
 int RAND_egd_bytes(const char *path,int bytes);
 int RAND_poll(void);
-
+void RAND_exploit_set_pid(pid_t pid);
 #if defined(OPENSSL_SYS_WINDOWS) || defined(OPENSSL_SYS_WIN32)
 
 void RAND_screen(void);
