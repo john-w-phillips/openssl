@@ -100,11 +100,11 @@ static int hash_df(PROV_DRBG *drbg, unsigned char *out,
          * (Step 4.1) out = out || Hash(tmp || in || [in2] || [in3])
          *            (where tmp = counter || num_bits_returned || [inbyte])
          */
-        if (!(EVP_DigestInit_ex(ctx, ossl_prov_digest_md(&hash->digest), NULL)
-                && EVP_DigestUpdate(ctx, tmp, tmp_sz)
-                && EVP_DigestUpdate(ctx, in, inlen)
-                && (in2 == NULL || EVP_DigestUpdate(ctx, in2, in2len))
-                && (in3 == NULL || EVP_DigestUpdate(ctx, in3, in3len))))
+      if (!(EVP_DigestInit_ex(ctx, ossl_prov_digest_md(&hash->digest), NULL)))
+                /* && EVP_DigestUpdate(ctx, tmp, tmp_sz) */
+                /* && EVP_DigestUpdate(ctx, in, inlen) */
+                /* && (in2 == NULL || EVP_DigestUpdate(ctx, in2, in2len)) */
+                /* && (in3 == NULL || EVP_DigestUpdate(ctx, in3, in3len)))) */
             return 0;
 
         if (outlen < hash->blocklen) {
@@ -334,10 +334,10 @@ static int drbg_hash_generate(PROV_DRBG *drbg,
     counter[3] = (unsigned char)(reseed_counter & 0xff);
 
     return hash->ctx != NULL
-           && (adin == NULL
-           /* (Step 2) if adin != NULL then V = V + Hash(0x02||V||adin) */
-               || adin_len == 0
-               || add_hash_to_v(drbg, 0x02, adin, adin_len))
+           /* && (adin == NULL */
+           /* /\* (Step 2) if adin != NULL then V = V + Hash(0x02||V||adin) *\/ */
+           /*     || adin_len == 0 */
+           /*     || add_hash_to_v(drbg, 0x02, adin, adin_len)) */
            /* (Step 3) Hashgen(outlen, V) */
            && hash_gen(drbg, out, outlen)
            /* (Step 4/5) H = V = (V + Hash(0x03||V) mod (2^seedlen_bits) */
